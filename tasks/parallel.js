@@ -17,21 +17,24 @@ module.exports = function(grunt) {
     nastyCounter++;
     grunt.util.spawn(task, function(error, result, code) {
       grunt.log.writeln();
-      grunt.log.write('travis_fold:start:' + nastyCounter + '\r');
+      grunt.log.write('travis_fold:start:FOLDING' + nastyCounter + '\r');
+      grunt.log.writeln();
       // lpad.stdout('    ');
 
       if (error || code !== 0) {
         var message = result.stderr || result.stdout;
 
         grunt.log.error(message);
-        grunt.log.write('travis_fold:end:' + nastyCounter + '\r');
+        grunt.log.write('travis_fold:end:FOLDING' + nastyCounter + '\r');
+        grunt.log.writeln();
         // lpad.stdout();
 
         return deferred.reject();
       }
 
       grunt.log.writeln(result);
-      grunt.log.write('travis_fold:end:' + nastyCounter + '\r');
+      grunt.log.write('travis_fold:end:FOLDING' + nastyCounter + '\r');
+      grunt.log.writeln();
       // lpad.stdout();
 
       deferred.resolve();
