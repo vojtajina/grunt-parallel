@@ -10,24 +10,29 @@ module.exports = function(grunt) {
   var Q = require('q');
   var lpad = require('lpad');
 
+  var nastyCounter = 0;
+
   function spawn(task) {
     var deferred = Q.defer();
-
+    nastyCounter++;
     grunt.util.spawn(task, function(error, result, code) {
       grunt.log.writeln();
-      lpad.stdout('    ');
+      grunt.log.write('travis_fold:start:' + nastyCounter + '\r');
+      // lpad.stdout('    ');
 
       if (error || code !== 0) {
         var message = result.stderr || result.stdout;
 
         grunt.log.error(message);
-        lpad.stdout();
-        
+        grunt.log.write('travis_fold:end:' + nastyCounter + '\r');
+        // lpad.stdout();
+
         return deferred.reject();
       }
 
       grunt.log.writeln(result);
-      lpad.stdout();
+      grunt.log.write('travis_fold:end:' + nastyCounter + '\r');
+      // lpad.stdout();
 
       deferred.resolve();
     });
@@ -39,9 +44,9 @@ module.exports = function(grunt) {
     var done = this.async();
     var options = this.options({
       grunt: false,
-      stream: false 
+      stream: false
     });
-    
+
     // If the configuration specifies that the task is a grunt task. Make it so.
     if (options.grunt === true) {
       this.data.tasks = this.data.tasks.map(function(task) {
